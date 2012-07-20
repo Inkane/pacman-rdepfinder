@@ -1,14 +1,12 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 from __future__ import print_function
 import os
 #import sys
-#import threading
-import multiprocessing
+import threading
+#import multiprocessing
 import collections
 import termcolor
 import argparse
-
-pool = multiprocessing.Pool()
 
 
 def pprint_list(l):
@@ -23,16 +21,21 @@ def pprint_list(l):
     print()
 
 
-class RdependsFinder(object):
+class RdependsFinder:
 
-    def __init__(self, recur_depth=1):
+    lock = threading.Lock()
+
+    def __init__(self, recur_depth=1, max_workers=4):
         self.already_visited_packages = set()
         self.all_rdepends = set()
         self.pkg2rdep = collections.OrderedDict()
         self.recur_depth = recur_depth
+        self.sema = threading.BoundedSemaphore(max_workers)
 
     def list_rdepends(self, package, recur=None):
         """print all the reverse depends of a package"""
+        #self.sema.acquire()
+        #print("aquired semaphore")
         if recur == None:
             recur = self.recur_depth
         if package in self.already_visited_packages:
@@ -44,11 +47,15 @@ class RdependsFinder(object):
         if rdepends == "None":
             return
         rdepends = rdepends.split()
+        RdependsFinder.lock.acquire()
         self.all_rdepends = self.all_rdepends.union(set(rdepends))
+        RdependsFinder.lock.release()
         self.pkg2rdep[package] = rdepends
         if self.recur_depth:
-            pool. rap(lambda x: self.list_rdepends(*x),
-                zip(rdepends, len(rdepends) * [recur - 1]))
+            for pac in rdepends:
+                threading.Thread(None, target=self.list_rdepends, args=(pac, recur - 1)).start()
+                self.list_rdepends(pac, recur - 1)
+        #self.sema.release()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Recursively list"
