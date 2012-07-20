@@ -3,9 +3,12 @@ from __future__ import print_function
 import os
 #import sys
 #import threading
+import multiprocessing
 import collections
 import termcolor
 import argparse
+
+pool = multiprocessing.Pool()
 
 
 def pprint_list(l):
@@ -44,8 +47,8 @@ class RdependsFinder(object):
         self.all_rdepends = self.all_rdepends.union(set(rdepends))
         self.pkg2rdep[package] = rdepends
         if self.recur_depth:
-            for pac in rdepends:
-                self.list_rdepends(pac, recur - 1)
+            pool. rap(lambda x: self.list_rdepends(*x),
+                zip(rdepends, len(rdepends) * [recur - 1]))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Recursively list"
