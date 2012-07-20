@@ -1,10 +1,11 @@
 #!/usr/bin/env python2
 from __future__ import print_function
 import os
-import sys
+#import sys
 #import threading
 import collections
 import termcolor
+import argparse
 
 
 def pprint_list(l):
@@ -13,15 +14,15 @@ def pprint_list(l):
     for word in sorted(l):
         if charlen > 50:
             charlen = 0
-            print("\n", end="\t")
+            print("\t\n", end="\t")
         charlen += len(word) + 1
-        print(word, end="  ")
+        print(word, end="\t")
     print()
 
 
 class RdependsFinder(object):
 
-    def __init__(self, recur_depth=5):
+    def __init__(self, recur_depth=1):
         self.already_visited_packages = set()
         self.all_rdepends = set()
         self.pkg2rdep = collections.OrderedDict()
@@ -40,18 +41,27 @@ class RdependsFinder(object):
         if rdepends == "None":
             return
         rdepends = rdepends.split()
+        self.all_rdepends = self.all_rdepends.union(set(rdepends))
         self.pkg2rdep[package] = rdepends
         if self.recur_depth:
             for pac in rdepends:
-                self.all_rdepends.add(pac)
                 self.list_rdepends(pac, recur - 1)
 
 if __name__ == "__main__":
-    rfinder = RdependsFinder(1)
-    rfinder.list_rdepends(sys.argv[1])
+    parser = argparse.ArgumentParser(description="Recursively list"
+            " all rdepends of a package.")
+    parser.add_argument("pname", metavar="<package name>", help="The name of the package.")
+    parser.add_argument("--recdepth", "-r", help="The recursion depth",
+           type=int, default=0)
+    args = parser.parse_args()
+    rfinder = RdependsFinder(args.recdepth)
+    rfinder.list_rdepends(args.pname)
     for k in rfinder.pkg2rdep:
         print(termcolor.colored(">> ", color="blue"), "rdepends of {} are: ".format(k))
         pprint_list(rfinder.pkg2rdep[k])
     print()
+    print(termcolor.colored(">> ", color="blue"), "total number of rdepends "
+       "checked (recursion level = {}):".format(rfinder.recur_depth), end="\t")
+    print(len(rfinder.all_rdepends))
     print(termcolor.colored(">> ", color="blue"), "All rdepends:")
     pprint_list(rfinder.all_rdepends)
