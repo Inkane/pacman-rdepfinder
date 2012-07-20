@@ -4,14 +4,16 @@ import os
 import sys
 import termcolor
 
-# we use a global variable, because a class is overkill in this case
+# we use global variables here, because a class is overkill in this case
+# and we don't use multithreading
 already_visited_packages = set()
+all_rdepends = set()
 
 
 def pprint_list(l):
     charlen = 0
     print("\t", end="")
-    for word in l:
+    for word in sorted(l):
         if charlen > 50:
             charlen = 0
             print("\n", end="\t")
@@ -31,11 +33,15 @@ def list_rdepends(package, recurse_depth=0):
     if rdepends == "None":
         return
     rdepends = rdepends.split()
-    print(termcolor.colored(">> ", color="blue"),"rdepends of {} are: ".format(package))
+    print(termcolor.colored(">> ", color="blue"), "rdepends of {} are: ".format(package))
     pprint_list(rdepends)
     if recurse_depth:
         for pac in rdepends:
+            all_rdepends.add(pac)
             list_rdepends(pac, recurse_depth - 1)
 
 if __name__ == "__main__":
-    list_rdepends(sys.argv[1], 2)
+    list_rdepends(sys.argv[1], 5)
+    print()
+    print(termcolor.colored(">> ", color="blue"), "All rdepends:")
+    pprint_list(all_rdepends)
