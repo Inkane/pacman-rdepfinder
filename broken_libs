@@ -1,0 +1,31 @@
+#!/bin/bash
+
+sudo -v
+
+files=$(find /usr/bin -maxdepth 1 -type f)
+libs=$(find /usr/lib/*.so* -maxdepth 1 -type f)
+
+clear
+echo "Searching broken binaries...."
+
+for binary in $files ; do
+    parse=$(sudo ldd ${binary} | grep "not found")
+    if [ "${parse}" != "" ] ; then
+	   echo "$(LC_ALL=C pacman -Qo $binary) seem broken!"
+    fi
+    unset parse
+done
+
+echo " "
+echo "Searching broken libs...."
+
+for lib in $libs ; do
+    if [ -x ${lib} ] ; then
+	    parse=$(sudo ldd ${lib} | grep "not found")
+	    if [ "${parse}" != "" ] ; then
+		    echo "$(LC_ALL=C pacman -Qo $lib) seem broken!"
+	    fi
+	    unset parse
+    fi
+done
+
