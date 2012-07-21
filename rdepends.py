@@ -3,11 +3,13 @@ from __future__ import print_function
 import os
 #import sys
 import threading
-#import multiprocessing
 import collections
 import termcolor
 import argparse
+import logging
 from time import sleep
+
+logging.basicConfig(level=logging.WARN, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 def pprint_list(l):
@@ -25,7 +27,7 @@ def pprint_list(l):
 class RdependsFinder:
 
     lock = threading.Lock()
-    #lock = threading.BoundedSemaphore()
+    #lock2 = threading.BoundedSemaphore()
 
     def __init__(self, recur_depth=1, max_workers=4):
         self._already_visited_packages = set()
@@ -48,27 +50,37 @@ class RdependsFinder:
 
     def list_rdepends(self, package, recur=None):
         """print all the reverse depends of a package"""
+        print
         if recur == None:
             recur = self.recur_depth
-        #print("locking...")
-        #RdependsFinder.lock.acquire()
-        #print("locked!")
+        logging.debug("locking...")
+        RdependsFinder.lock.acquire()
+        logging.debug(package)
+        logging.debug("locked!")
         if package in self._already_visited_packages:
+            logging.debug("releasing...")
+            RdependsFinder.lock.release()
+            logging.debug("released!")
             return
         else:
             self._already_visited_packages.add(package)
+        logging.debug("after already_visited_packages")
         #RdependsFinder.lock.release()
         rdepends = os.popen("""LANGUAGE=en_US pacman -Sii {0} | grep -im"""
                 """ 1 "required by" | sed -r 's/^.+://'""".format(package)).read().strip()
+        logging.debug("after os.popen")
         if rdepends == "None":
+            logging.debug("releasing...")
+            RdependsFinder.lock.release()
+            logging.debug("released!")
             return
         rdepends = rdepends.split()
         #RdependsFinder.lock.acquire()
         self._all_rdepends = self._all_rdepends.union(set(rdepends))
         self._pkg2rdep[package] = rdepends
-        #print("releasing...")
-        #RdependsFinder.lock.release()
-        #print("released!")
+        logging.debug("releasing...")
+        RdependsFinder.lock.release()
+        logging.debug("released!")
         if self.recur_depth:
             for pac in rdepends:
                 #self.sema.acquire()  # FIXME
