@@ -11,6 +11,7 @@ positional arguments:
   <package name>        The name of the package.
 
 optional arguments:
+
   -h, --help            show this help message and exit
 
   --recdepth RECDEPTH, -r RECDEPTH
