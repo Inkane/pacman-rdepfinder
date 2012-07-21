@@ -1,6 +1,6 @@
-intainer: Inkane <neoinkaneglade@aol.com> 
+#Maintainer: Inkane <neoinkaneglade@aol.com> 
  
-pkgname="chakra-paste-git"
+pkgname="rdepend-finder"
 pkgrel=1
 pkgdesc="Allows to upload text files to paste.chakra-project.org"
 arch=("any")
