@@ -9,7 +9,7 @@ import argparse
 import logging
 from time import sleep
 
-logging.basicConfig(level=logging.WARN, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 def pprint_list(l):
@@ -81,7 +81,7 @@ class RdependsFinder:
         logging.debug("releasing...")
         RdependsFinder.lock.release()
         logging.debug("released!")
-        if self.recur_depth:
+        if recur:
             for pac in rdepends:
                 #self.sema.acquire()  # FIXME
                 threading.Thread(None, target=self.list_rdepends, args=(pac, recur - 1)).start()
