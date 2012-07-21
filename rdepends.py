@@ -95,7 +95,6 @@ class RdependsFinder:
                 #self.sema.release()
 
 if __name__ == "__main__":
-    print("Determining the rdpes. This may take a while...")
     parser = argparse.ArgumentParser(description="Recursively list"
             " all rdepends of a package.")
     parser.add_argument("pname", metavar="<package name>", help="The name of the package.")
@@ -103,6 +102,7 @@ if __name__ == "__main__":
             " (listing rdepends of rdepends)",
            type=float, default=0)  # use float to allow inf
     args = parser.parse_args()
+    print("Determining the rdpes. This may take a while...")
     rfinder = RdependsFinder(args.recdepth)
     rfinder.list_rdepends(args.pname)
     for k in rfinder.pkg2rdep:
