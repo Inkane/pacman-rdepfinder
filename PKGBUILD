@@ -32,7 +32,7 @@ package() {
   cd "$srcdir/$_gitname-build"
   python2 setup.py install --root="${pkgdir}"
   #ln -s "$pkgdir"/usr/bin/rdepends.py "$pkgdir"/usr/bin/rdepend-finder
-  chmod 0755 "$pkgdir"/usr/bin/rdepend-finder
+  #chmod 0755 "$pkgdir"/usr/bin/rdepend-finder
 }
  
 # vim:set ts=2 sw=2 et:
