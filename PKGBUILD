@@ -1,6 +1,6 @@
 #Maintainer: Inkane <neoinkaneglade@aol.com> 
  
-pkgname="rdepend-finder"
+pkgname="rdepend-finder-git"
 pkgrel=1
 pkgdesc="Allows to upload text files to paste.chakra-project.org"
 arch=("any")
