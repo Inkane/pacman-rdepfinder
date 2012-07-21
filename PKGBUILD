@@ -3,9 +3,9 @@
 pkgname="rdepend-finder-git"
 pkgver=20120721
 pkgrel=1
-pkgdesc="Allows to upload text files to paste.chakra-project.org"
+pkgdesc="Find rdepends of a package"
 arch=("any")
-url="https://github.com/Inkane/chakra-paste"
+url="git://github.com/Inkane/pacman-rdepfinder.git"
 license=('BSD')
 depends=('python3-termcolor')
 makedepends=('git')
