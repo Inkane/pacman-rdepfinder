@@ -4,10 +4,16 @@ import os
 #import sys
 import threading
 import collections
-import termcolor
 import argparse
 import logging
 from time import sleep
+try:
+    from  termcolor import colored
+except ImportError:
+    print("You don't have termcolor installed. "
+           "Without it you won't get fancy colors :-(")
+    def colored(text, *args, **kwargs):
+        return(text)
 
 logging.basicConfig(level=logging.WARN, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -100,11 +106,11 @@ if __name__ == "__main__":
     rfinder = RdependsFinder(args.recdepth)
     rfinder.list_rdepends(args.pname)
     for k in rfinder.pkg2rdep:
-        print(termcolor.colored(">> ", color="blue"), "rdepends of {} are: ".format(k))
+        print(colored(">> ", color="blue"), "rdepends of {} are: ".format(k))
         pprint_list(rfinder.pkg2rdep[k])
     print()
-    print(termcolor.colored(">> ", color="blue"), "total number of rdepends "
+    print(colored(">> ", color="blue"), "total number of rdepends "
        "checked (recursion level = {}):".format(rfinder.recur_depth), end="\t")
     print(len(rfinder.all_rdepends))
-    print(termcolor.colored(">> ", color="blue"), "All rdepends:")
+    print(colored(">> ", color="blue"), "All rdepends:")
     pprint_list(rfinder.all_rdepends)
