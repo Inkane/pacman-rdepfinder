@@ -1,6 +1,7 @@
 #Maintainer: Inkane <neoinkaneglade@aol.com> 
  
 pkgname="rdepend-finder-git"
+pkgver=20120721
 pkgrel=1
 pkgdesc="Allows to upload text files to paste.chakra-project.org"
 arch=("any")
@@ -30,7 +31,8 @@ package() {
   git clone "$srcdir/$_gitname" "$srcdir/$_gitname-build"
   cd "$srcdir/$_gitname-build"
   python2 setup.py install --root="${pkgdir}"
-  ln -s "$pkgdir"/rdepends.py "$pkdir"/rdepend-finder
+  #ln -s "$pkgdir"/usr/bin/rdepends.py "$pkgdir"/usr/bin/rdepend-finder
+  chmod 0755 "$pkgdir"/usr/bin/rdepend-finder
 }
  
 # vim:set ts=2 sw=2 et:
