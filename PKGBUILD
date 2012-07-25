@@ -30,7 +30,7 @@ package() {
   rm -rf "$srcdir/$_gitname-build"
   git clone "$srcdir/$_gitname" "$srcdir/$_gitname-build"
   cd "$srcdir/$_gitname-build"
-  python2 setup.py install --root="${pkgdir}"
+  python3 setup.py install --root="${pkgdir}"
   #ln -s "$pkgdir"/usr/bin/rdepends.py "$pkgdir"/usr/bin/rdepend-finder
   #chmod 0755 "$pkgdir"/usr/bin/rdepend-finder
 }
