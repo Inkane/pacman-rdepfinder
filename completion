@@ -1,0 +1,34 @@
+# This file is in the public domain.
+ 
+_arch_compgen() {
+  local i r
+  COMPREPLY=($(compgen -W '$*' -- "$cur"))
+  for ((i=1; i < ${#COMP_WORDS[@]}-1; i++)); do
+    for r in ${!COMPREPLY[@]}; do
+      if [[ ${COMP_WORDS[i]} = ${COMPREPLY[r]} ]]; then
+        unset 'COMPREPLY[r]'; break
+      fi
+    done
+  done
+}
+ 
+_pacman_pkg() {
+  _arch_compgen "$(
+    if [[ $2 ]]; then
+      \pacman -$1 2>/dev/null | \cut -d' ' -f1 | \sort -u
+    else
+      \pacman -$1 2>/dev/null
+    fi
+  )"
+}
+ 
+_pacman() {
+  COMPREPLY=()
+  _get_comp_words_by_ref cur prev
+  _pacman_pkg Slq
+  true
+}
+ 
+complete -F _pacman -o default rdepends.py
+ 
+# ex:et ts=2 sw=2 ft=sh
