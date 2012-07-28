@@ -33,6 +33,7 @@ package() {
   python3 setup.py install --root="${pkgdir}"
   #ln -s "$pkgdir"/usr/bin/rdepends.py "$pkgdir"/usr/bin/rdepend-finder
   #chmod 0755 "$pkgdir"/usr/bin/rdepend-finder
+  install -Dm 644  completion "$pkgdir"/etc/bash_completion.d/rdepends.py
 }
  
 # vim:set ts=2 sw=2 et:
