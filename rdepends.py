@@ -102,7 +102,7 @@ if __name__ == "__main__":
             " (listing rdepends of rdepends)",
            type=float, default=0)  # use float to allow inf
     args = parser.parse_args()
-    print("Determining the rdpes. This may take a while...")
+    print("Determining the rdeps. This may take a while...")
     rfinder = RdependsFinder(args.recdepth)
     rfinder.list_rdepends(args.pname)
     for k in rfinder.pkg2rdep:
